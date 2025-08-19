@@ -25,6 +25,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace "com.islameehassan.flutter_blue_background"
     compileSdkVersion 31
 
     compileOptions {

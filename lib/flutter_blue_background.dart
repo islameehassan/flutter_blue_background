@@ -111,7 +111,6 @@ class FlutterBlueBackground {
         'characteristicUuid': characteristicUuid
       });
 
-      // Assuming that the result is a String, you can replace String with the actual type.
       return result.toString();
     }
   }
