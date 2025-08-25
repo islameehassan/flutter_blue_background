@@ -27,9 +27,9 @@ class FlutterBlueBackground {
     final isRunning = await service.isRunning();
 
     if (isRunning) {
-      await service.invoke("stopService");
+      service.invoke("stopService");
       // Call callback if provided
-      stopCallback?.call();
+      await stopCallback?.call();
     }
   }
 
