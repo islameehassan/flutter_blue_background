@@ -21,12 +21,16 @@ class FlutterBlueBackground {
     await preferences.setStringList('log', log);
   }
 
-  static Future<void> stopFlutterBackgroundService() async {
+  static Future<void> stopFlutterBackgroundService(
+      {Function()? stopCallback}) async {
     final service = FlutterBackgroundService();
-    var isRunning = await service.isRunning();
+    final isRunning = await service.isRunning();
+
     if (isRunning) {
-      service.invoke("stopService");
-    } else {}
+      await service.invoke("stopService");
+      // Call callback if provided
+      stopCallback?.call();
+    }
   }
 
   // This Function will start or initialize background service in ios and android
