@@ -47,7 +47,7 @@ Future<void> initializeService() async {
       isForegroundMode: true,
 
       notificationChannelId: 'my_foreground',
-      initialNotificationTitle: 'AWESOME SERVICE',
+      initialNotificationTitle: 'AutoPULSE',
       initialNotificationContent: 'Initializing',
       foregroundServiceNotificationId: 888,
     ),
@@ -83,7 +83,6 @@ Future<bool> onIosBackground(ServiceInstance service) async {
 
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
-  print("ON START CALLED\n");
   // Only available for flutter 3.0.0 and later
   DartPluginRegistrant.ensureInitialized();
 
@@ -290,7 +289,7 @@ void onStart(ServiceInstance service) async {
       final String charUuid = event["characteristicUuid"];
       final String data = event["data"];
 
-      debugPrint("Received write request for $charUuid with data: $data");
+      //debugPrint("Received write request for $charUuid with data: $data");
 
       // Update UUIDs if needed
       sendCharacteristicUuid = charUuid;
@@ -300,43 +299,40 @@ void onStart(ServiceInstance service) async {
     }
   });
 
-  // bring to foreground
-  Timer.periodic(const Duration(seconds: 2), (timer) async {
-    if (service is AndroidServiceInstance) {
-      if (await service.isForegroundService()) {
-        /// OPTIONAL for use custom notification
-        /// the notification id must be equals with AndroidConfiguration when you call configure() method.
-        flutterLocalNotificationsPlugin.show(
-          888,
-          'COOL SERVICE',
-          'Awesome ${DateTime.now()}',
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              'my_foreground',
-              'MY FOREGROUND SERVICE',
-              icon: 'ic_bg_service_small',
-              ongoing: true,
-            ),
+  if (service is AndroidServiceInstance) {
+    if (await service.isForegroundService()) {
+      /// OPTIONAL for use custom notification
+      /// the notification id must be equals with AndroidConfiguration when you call configure() method.
+      flutterLocalNotificationsPlugin.show(
+        888,
+        'AutoPULSE',
+        'OBD Data is being fetched in background',
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'my_foreground',
+            'MY FOREGROUND SERVICE',
+            icon: 'ic_bg_service_small',
+            ongoing: true,
           ),
-        );
+        ),
+      );
 
-        // if you don't using custom notification, uncomment this
-        service.setForegroundNotificationInfo(
-          title: "My App Service",
-          content: "Updated at ${DateTime.now()}",
-        );
-      }
+      // if you don't using custom notification, uncomment this
+      // service.setForegroundNotificationInfo(
+      //   title: "My App Service",
+      //   content: "Updated at ${DateTime.now()}",
+      // );
     }
+  }
 
-    /// you can see this log in logcat
-    //debugPrint('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
+  /// you can see this log in logcat
+  //debugPrint('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
 
-    service.invoke(
-      'update',
-      {
-        "current_date": DateTime.now().toIso8601String(),
-        "readData": readValue.toString(),
-      },
-    );
-  });
+  // service.invoke(
+  //   'update',
+  //   {
+  //     "current_date": DateTime.now().toIso8601String(),
+  //     "readData": readValue.toString(),
+  //   },
+  // );
 }
